@@ -2,7 +2,6 @@ package jm.task.core.jdbc.dao;
 
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
-import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -36,7 +35,7 @@ public class UserDaoHibernateImpl implements UserDao {
                 transaction.rollback();
                 e.printStackTrace();
             }
-        } catch (HibernateException e) {
+        } catch (PersistenceException e) {
             e.printStackTrace();
         }
     }
@@ -52,7 +51,7 @@ public class UserDaoHibernateImpl implements UserDao {
                 transaction.rollback();
                 e.printStackTrace();
             }
-        } catch (HibernateException e) {
+        } catch (PersistenceException e) {
             e.printStackTrace();
         }
     }
@@ -73,7 +72,7 @@ public class UserDaoHibernateImpl implements UserDao {
                 transaction.rollback();
                 e.printStackTrace();
             }
-        } catch (HibernateException e) {
+        } catch (PersistenceException e) {
             e.printStackTrace();
         }
     }
@@ -89,7 +88,7 @@ public class UserDaoHibernateImpl implements UserDao {
                 transaction.rollback();
                 e.printStackTrace();
             }
-        } catch (HibernateException e) {
+        } catch (PersistenceException e) {
             e.printStackTrace();
         }
     }
@@ -107,7 +106,7 @@ public class UserDaoHibernateImpl implements UserDao {
                 transaction.rollback();
                 e.printStackTrace();
             }
-        } catch (HibernateException e) {
+        } catch (PersistenceException e) {
             e.printStackTrace();
         }
         return null;
@@ -124,7 +123,7 @@ public class UserDaoHibernateImpl implements UserDao {
                 transaction.rollback();
                 e.printStackTrace();
             }
-        } catch (HibernateException e) {
+        } catch (PersistenceException e) {
             e.printStackTrace();
         }
     }
