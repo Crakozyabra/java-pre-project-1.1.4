@@ -22,7 +22,7 @@ public class UserDaoHibernateImpl implements UserDao {
         try (Session session = sessionFactory.openSession()) {
             Transaction transaction = session.beginTransaction();
             try {
-                session.createNativeQuery("""
+                session.createSQLQuery("""
                             CREATE TABLE IF NOT EXISTS users(
                                 id BIGINT PRIMARY KEY AUTO_INCREMENT,
                                 name VARCHAR(128),
@@ -45,7 +45,7 @@ public class UserDaoHibernateImpl implements UserDao {
         try (Session session = sessionFactory.openSession()) {
             Transaction transaction = session.beginTransaction();
             try {
-                session.createNativeQuery("DROP TABLE IF EXISTS users").executeUpdate();
+                session.createSQLQuery("DROP TABLE IF EXISTS users").executeUpdate();
                 transaction.commit();
             } catch (PersistenceException e) {
                 transaction.rollback();
@@ -61,12 +61,9 @@ public class UserDaoHibernateImpl implements UserDao {
         try (Session session = sessionFactory.openSession()) {
             Transaction transaction = session.beginTransaction();
             try {
-                // https://docs.jboss.org/hibernate/orm/5.6/userguide/html_single/Hibernate_User_Guide.html#sql-query-parameters
-                session.createNativeQuery("INSERT INTO users(name, last_name, age) VALUES (:name, :lastName, :age);")
-                        .setParameter("name", name)
-                        .setParameter("lastName", lastName)
-                        .setParameter("age", age)
-                        .executeUpdate();
+                // https://docs.jboss.org/hibernate/orm/5.6/userguide/html_single/Hibernate_User_Guide.html#hql-insert (only from other table)
+                // https://docs.jboss.org/hibernate/orm/5.6/userguide/html_single/Hibernate_User_Guide.html#pc-persist
+                session.persist(new User(name, lastName, age));
                 transaction.commit();
             } catch (PersistenceException e) {
                 transaction.rollback();
@@ -82,7 +79,8 @@ public class UserDaoHibernateImpl implements UserDao {
         try (Session session = sessionFactory.openSession()) {
             Transaction transaction = session.beginTransaction();
             try {
-                session.createNativeQuery("DELETE FROM users WHERE id=:id").setParameter("id", id).executeUpdate();
+                session.createQuery("DELETE FROM User WHERE id=:id").setParameter("id", id)
+                        .executeUpdate();
                 transaction.commit();
             } catch (PersistenceException e) {
                 transaction.rollback();
@@ -98,8 +96,8 @@ public class UserDaoHibernateImpl implements UserDao {
         try (Session session = sessionFactory.openSession()) {
             Transaction transaction = session.beginTransaction();
             try {
-                // https://docs.jboss.org/hibernate/orm/5.6/userguide/html_single/Hibernate_User_Guide.html#sql-entity-query
-                List<User> users = session.createNativeQuery("SELECT * FROM users", User.class).list();
+                // https://docs.jboss.org/hibernate/orm/5.6/userguide/html_single/Hibernate_User_Guide.html#hql-select
+                List<User> users = session.createQuery("FROM User", User.class).list();
                 transaction.commit();
                 return users;
             } catch (PersistenceException e) {
@@ -117,7 +115,8 @@ public class UserDaoHibernateImpl implements UserDao {
         try (Session session = sessionFactory.openSession()) {
             Transaction transaction = session.beginTransaction();
             try {
-                session.createNativeQuery("DELETE FROM users").executeUpdate();
+                // https://docs.jboss.org/hibernate/orm/5.6/userguide/html_single/Hibernate_User_Guide.html#hql-delete
+                session.createQuery("DELETE FROM User").executeUpdate();
                 transaction.commit();
             } catch (PersistenceException e) {
                 transaction.rollback();
